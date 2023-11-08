@@ -1,0 +1,605 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "pd.options.display.max_rows = 4000\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 86,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df_1 = pd.read_csv(\"~/Desktop/data_ver6.csv\", encoding='latin1')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 87,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df_1 = df_1[[\"country_name\", \"groupname\", \"year\", \"basecountry1\", \"basecountry2\", \"basecountry3\", \"basecountry4\", \"basecountry5\", \"basecountry6\", \"basecountry7\", \"basecountry8\", \"basecountry9\", \"basecountry10\"]]\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 88,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df_1.columns = [\"country\", \"group\", \"year\", \"b1\", \"b2\", \"b3\", \"b4\", \"b5\", \"b6\", \"b7\", \"b8\", \"b9\", \"b10\"]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 89,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "(876015, 13)\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(df_1.shape)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 90,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df_mer = df_1"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 91,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "(876015, 13)\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(df_mer.shape)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 96,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df_2 = pd.read_csv(\"~/Desktop/atop_merged_ver3.csv\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 97,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df_2 = df_2[[\"StateNme.y\", \"StateNme.x\", \"year\", \"atopally\", \"defense\", \"offense\", \"neutral\", \"nonagg\"]]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 98,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for i in range(1, 11):\n",
+    "    df_2.columns = [\"country\", \"b\"+str(i), \"year\", str(i)+\"_atopally\", str(i)+\"_defense\", str(i)+\"_offense\", str(i)+\"_neutral\", str(i)+\"_nonagg\"]\n",
+    "    df_mer = pd.merge(df_mer, df_2, on=(\"year\", \"country\", \"b\"+str(i)), how='left')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 99,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "(876018, 113)\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(df_mer.shape)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 66,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df_mer.to_csv(\"~/Desktop/tmp1.csv\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 100,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df_mer = df_mer.fillna(0)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 101,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for i in range(1, 11):\n",
+    "    df_mer[\"xy_atopally_\"+str(i)] = df_mer[str(i)+\"_atopally_x\"] + df_mer[str(i)+\"_atopally_y\"]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 102,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for i in range(1, 11):\n",
+    "    df_mer[\"xy_offense_\"+str(i)] = df_mer[str(i)+\"_offense_x\"] + df_mer[str(i)+\"_offense_y\"]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 103,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for i in range(1, 11):\n",
+    "    df_mer[\"xy_defense_\"+str(i)] = df_mer[str(i)+\"_defense_x\"] + df_mer[str(i)+\"_defense_y\"]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 104,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for i in range(1, 11):\n",
+    "    df_mer[\"xy_neutral_\"+str(i)] = df_mer[str(i)+\"_neutral_x\"] + df_mer[str(i)+\"_neutral_y\"]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 105,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for i in range(1, 11):\n",
+    "    df_mer[\"xy_nonagg_\"+str(i)] = df_mer[str(i)+\"_nonagg_x\"] + df_mer[str(i)+\"_nonagg_y\"]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 106,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for i in range(1, 11):\n",
+    "    df_mer.loc[df_mer[\"xy_offense_\"+str(i)] == 2, \"xy_offense_\"+str(i)] = 1"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 107,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for i in range(1, 11):\n",
+    "    df_mer.loc[df_mer[\"xy_defense_\"+str(i)] == 2, \"xy_defense_\"+str(i)] = 1"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 108,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for i in range(1, 11):\n",
+    "    df_mer.loc[df_mer[\"xy_neutral_\"+str(i)] == 2, \"xy_neutral_\"+str(i)] = 1"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 109,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for i in range(1, 11):\n",
+    "    df_mer.loc[df_mer[\"xy_nonagg_\"+str(i)] == 2, \"xy_nonagg_\"+str(i)] = 1"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 110,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for i in range(1, 11):\n",
+    "    df_mer.loc[df_mer[\"xy_atopally_\"+str(i)] == 2, \"xy_atopally_\"+str(i)] = 1"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 32,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df_mer.to_csv(\"~/Documents/tmp_2.csv\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 111,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for i in range(1, 11):\n",
+    "    df_mer[\"total_\" + str(i)] = df_mer[\"xy_atopally_\"+str(i)] + df_mer[\"xy_offense_\"+str(i)] + df_mer[\"xy_defense_\"+str(i)] +  df_mer[\"xy_neutral_\"+str(i)] + df_mer[\"xy_nonagg_\"+str(i)] "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 112,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for i in range(1, 11):\n",
+    "    df_mer.loc[df_mer[\"total_\" + str(i)] >= 1, \"total_\" + str(i)] = 1"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 114,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df_mer[\"TOTAL\"] = df_mer[\"total_1\"]\n",
+    "for i in range(2, 11):\n",
+    "    df_mer[\"TOTAL\"] += df_mer[\"total_\"+str(i)]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 115,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df_mer.to_csv(\"~/Documents/tmp_3.csv\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 116,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "/Users/lijing/jupyter_try/jvenv/lib/python3.6/site-packages/IPython/core/interactiveshell.py:3049: DtypeWarning: Columns (5,6,7,8,9,10,11,12,13) have mixed types. Specify dtype option on import or set low_memory=False.\n",
+      "  interactivity=interactivity, compiler=compiler, result=result)\n"
+     ]
+    }
+   ],
+   "source": [
+    "df_drop = pd.read_csv(\"~/Documents/tmp_3.csv\", encoding='latin1')\n",
+    "# convert 0 to NA"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 117,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for i in range(1, 11):\n",
+    "    df_drop.loc[df_drop[\"b\"+str(i)] == \"0\", \"xy_atopally_\"+str(i)] = np.nan\n",
+    "    df_drop.loc[df_drop[\"b\"+str(i)] == \"0\", \"xy_offense_\"+str(i)] = np.nan\n",
+    "    df_drop.loc[df_drop[\"b\"+str(i)] == \"0\", \"xy_defense_\"+str(i)] = np.nan\n",
+    "    df_drop.loc[df_drop[\"b\"+str(i)] == \"0\", \"xy_neutral_\"+str(i)] = np.nan\n",
+    "    df_drop.loc[df_drop[\"b\"+str(i)] == \"0\", \"xy_nonagg_\"+str(i)] = np.nan\n",
+    "    df_drop.loc[df_drop[\"b\"+str(i)] == \"0\", \"total_\"+str(i)] = np.nan"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 118,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for i in range(1, 11):\n",
+    "    df_drop.loc[df_drop[\"year\"] > 2016, \"xy_atopally_\"+str(i)] = np.nan\n",
+    "    df_drop.loc[df_drop[\"year\"] > 2016, \"xy_offense_\"+str(i)] = np.nan\n",
+    "    df_drop.loc[df_drop[\"year\"] > 2016, \"xy_defense_\"+str(i)] = np.nan\n",
+    "    df_drop.loc[df_drop[\"year\"] > 2016, \"xy_neutral_\"+str(i)] = np.nan\n",
+    "    df_drop.loc[df_drop[\"year\"] > 2016, \"xy_nonagg_\"+str(i)] = np.nan\n",
+    "    df_drop.loc[df_drop[\"year\"] > 2016, \"total_\"+str(i)] = np.nan"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 119,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "/Users/lijing/jupyter_try/jvenv/lib/python3.6/site-packages/pandas/core/ops.py:1649: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison\n",
+      "  result = method(y)\n"
+     ]
+    }
+   ],
+   "source": [
+    "df_drop.loc[df_drop[\"TOTAL\"] == \"0\", \"TOTAL\"] = np.nan"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 120,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df_drop.to_csv(\"~/Desktop/tmp_5.csv\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 104,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "   Unnamed: 0  Unnamed: 0.1 country        group  year        b1 b2 b3 b4 b5  \\\n",
+      "0           0             0   Benin  313 Brigade  2003  Pakistan  0  0  0  0   \n",
+      "1           1             1   Benin  313 Brigade  2004  Pakistan  0  0  0  0   \n",
+      "2           2             2   Benin  313 Brigade  2005  Pakistan  0  0  0  0   \n",
+      "3           3             3   Benin  313 Brigade  2006  Pakistan  0  0  0  0   \n",
+      "4           4             4   Benin  313 Brigade  2007  Pakistan  0  0  0  0   \n",
+      "\n",
+      "   ... total_1 total_2 total_3 total_4 total_5  total_6  total_7  total_8  \\\n",
+      "0  ...     0.0     NaN     NaN     NaN     NaN      NaN      NaN      NaN   \n",
+      "1  ...     0.0     NaN     NaN     NaN     NaN      NaN      NaN      NaN   \n",
+      "2  ...     0.0     NaN     NaN     NaN     NaN      NaN      NaN      NaN   \n",
+      "3  ...     0.0     NaN     NaN     NaN     NaN      NaN      NaN      NaN   \n",
+      "4  ...     0.0     NaN     NaN     NaN     NaN      NaN      NaN      NaN   \n",
+      "\n",
+      "   total_9  total_10  \n",
+      "0      NaN       NaN  \n",
+      "1      NaN       NaN  \n",
+      "2      NaN       NaN  \n",
+      "3      NaN       NaN  \n",
+      "4      NaN       NaN  \n",
+      "\n",
+      "[5 rows x 75 columns]\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(df_drop.head())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "KeyError",
+     "evalue": "'1_defense'",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mKeyError\u001b[0m                                  Traceback (most recent call last)",
+      "\u001b[0;32m~/jupyter_try/jvenv/lib/python3.6/site-packages/pandas/core/indexes/base.py\u001b[0m in \u001b[0;36mget_loc\u001b[0;34m(self, key, method, tolerance)\u001b[0m\n\u001b[1;32m   2656\u001b[0m             \u001b[0;32mtry\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m-> 2657\u001b[0;31m                 \u001b[0;32mreturn\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_engine\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mget_loc\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mkey\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m   2658\u001b[0m             \u001b[0;32mexcept\u001b[0m \u001b[0mKeyError\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32mpandas/_libs/index.pyx\u001b[0m in \u001b[0;36mpandas._libs.index.IndexEngine.get_loc\u001b[0;34m()\u001b[0m\n",
+      "\u001b[0;32mpandas/_libs/index.pyx\u001b[0m in \u001b[0;36mpandas._libs.index.IndexEngine.get_loc\u001b[0;34m()\u001b[0m\n",
+      "\u001b[0;32mpandas/_libs/hashtable_class_helper.pxi\u001b[0m in \u001b[0;36mpandas._libs.hashtable.PyObjectHashTable.get_item\u001b[0;34m()\u001b[0m\n",
+      "\u001b[0;32mpandas/_libs/hashtable_class_helper.pxi\u001b[0m in \u001b[0;36mpandas._libs.hashtable.PyObjectHashTable.get_item\u001b[0;34m()\u001b[0m\n",
+      "\u001b[0;31mKeyError\u001b[0m: '1_defense'",
+      "\nDuring handling of the above exception, another exception occurred:\n",
+      "\u001b[0;31mKeyError\u001b[0m                                  Traceback (most recent call last)",
+      "\u001b[0;32m<ipython-input-25-e9d8a2aec463>\u001b[0m in \u001b[0;36m<module>\u001b[0;34m\u001b[0m\n\u001b[1;32m      1\u001b[0m \u001b[0;32mfor\u001b[0m \u001b[0mi\u001b[0m \u001b[0;32min\u001b[0m \u001b[0mrange\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;36m1\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;36m11\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 2\u001b[0;31m     \u001b[0mdf_mer\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0mstr\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mi\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m]\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mnp\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mwhere\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mdf_mer\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0mstr\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mi\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m+\u001b[0m\u001b[0;34m'_defense'\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m==\u001b[0m\u001b[0mdf_mer\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0mstr\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mi\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m+\u001b[0m\u001b[0;34m'_defense'\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;36m0\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[0;32m~/jupyter_try/jvenv/lib/python3.6/site-packages/pandas/core/frame.py\u001b[0m in \u001b[0;36m__getitem__\u001b[0;34m(self, key)\u001b[0m\n\u001b[1;32m   2925\u001b[0m             \u001b[0;32mif\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcolumns\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mnlevels\u001b[0m \u001b[0;34m>\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   2926\u001b[0m                 \u001b[0;32mreturn\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_getitem_multilevel\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mkey\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m-> 2927\u001b[0;31m             \u001b[0mindexer\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mcolumns\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mget_loc\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mkey\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m   2928\u001b[0m             \u001b[0;32mif\u001b[0m \u001b[0mis_integer\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mindexer\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   2929\u001b[0m                 \u001b[0mindexer\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0;34m[\u001b[0m\u001b[0mindexer\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32m~/jupyter_try/jvenv/lib/python3.6/site-packages/pandas/core/indexes/base.py\u001b[0m in \u001b[0;36mget_loc\u001b[0;34m(self, key, method, tolerance)\u001b[0m\n\u001b[1;32m   2657\u001b[0m                 \u001b[0;32mreturn\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_engine\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mget_loc\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mkey\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   2658\u001b[0m             \u001b[0;32mexcept\u001b[0m \u001b[0mKeyError\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m-> 2659\u001b[0;31m                 \u001b[0;32mreturn\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_engine\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mget_loc\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0m_maybe_cast_indexer\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mkey\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m   2660\u001b[0m         \u001b[0mindexer\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mself\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mget_indexer\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0mkey\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mmethod\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mmethod\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mtolerance\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mtolerance\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   2661\u001b[0m         \u001b[0;32mif\u001b[0m \u001b[0mindexer\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mndim\u001b[0m \u001b[0;34m>\u001b[0m \u001b[0;36m1\u001b[0m \u001b[0;32mor\u001b[0m \u001b[0mindexer\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0msize\u001b[0m \u001b[0;34m>\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+      "\u001b[0;32mpandas/_libs/index.pyx\u001b[0m in \u001b[0;36mpandas._libs.index.IndexEngine.get_loc\u001b[0;34m()\u001b[0m\n",
+      "\u001b[0;32mpandas/_libs/index.pyx\u001b[0m in \u001b[0;36mpandas._libs.index.IndexEngine.get_loc\u001b[0;34m()\u001b[0m\n",
+      "\u001b[0;32mpandas/_libs/hashtable_class_helper.pxi\u001b[0m in \u001b[0;36mpandas._libs.hashtable.PyObjectHashTable.get_item\u001b[0;34m()\u001b[0m\n",
+      "\u001b[0;32mpandas/_libs/hashtable_class_helper.pxi\u001b[0m in \u001b[0;36mpandas._libs.hashtable.PyObjectHashTable.get_item\u001b[0;34m()\u001b[0m\n",
+      "\u001b[0;31mKeyError\u001b[0m: '1_defense'"
+     ]
+    }
+   ],
+   "source": [
+    "for i in range(1, 11):\n",
+    "    df_mer[str(i)] = np.where(df_mer[str(i)+'_defense']==df_mer[str(i)+'_defense'], 1, 0)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df_mer.to_csv(\"~/Documents/process_2.csv\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 34,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Index(['country', 'group', 'year', 'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7',\n",
+      "       'b8', 'b9', 'b10', '1_defense', '1_neutrality', '1_nonaggression',\n",
+      "       '1_entente', '2_defense', '2_neutrality', '2_nonaggression',\n",
+      "       '2_entente', '3_defense', '3_neutrality', '3_nonaggression',\n",
+      "       '3_entente', '4_defense', '4_neutrality', '4_nonaggression',\n",
+      "       '4_entente', '5_defense', '5_neutrality', '5_nonaggression',\n",
+      "       '5_entente', '6_defense', '6_neutrality', '6_nonaggression',\n",
+      "       '6_entente', '7_defense', '7_neutrality', '7_nonaggression',\n",
+      "       '7_entente', '8_defense', '8_neutrality', '8_nonaggression',\n",
+      "       '8_entente', '9_defense', '9_neutrality', '9_nonaggression',\n",
+      "       '9_entente', '10_defense', '10_neutrality', '10_nonaggression',\n",
+      "       '10_entente', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],\n",
+      "      dtype='object')\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(df_mer.columns)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df_mer = df_mer[['country', 'group', 'year', 'b1', '1', '1_defense', '1_offense', '1_neutral', '1_nonagg',\n",
+    "                                    'b2', '2', '2_defense', '2_offense', '2_neutral', '2_nonagg',\n",
+    "                                    'b3', '3', '3_defense', '3_offense', '3_neutral', '3_nonagg',\n",
+    "                                    'b4', '4', '4_defense', '4_offense', '4_neutral', '4_nonagg',\n",
+    "                                    'b5', '5', '5_defense', '5_offense', '5_neutral', '5_nonagg',\n",
+    "                                    'b6', '6', '6_defense', '6_offense', '6_neutral', '6_nonagg',\n",
+    "                                    'b7', '7', '7_defense', '7_offense', '7_neutral', '7_nonagg'\n",
+    "       ]]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df_mer.to_csv(\"~/Documents/Done_add_7_reorder_reverse.csv\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "(403572, 45)\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(df_mer.shape)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "jvenv",
+   "language": "python",
+   "name": "jvenv"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.6.5"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
